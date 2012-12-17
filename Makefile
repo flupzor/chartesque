@@ -23,4 +23,4 @@ demo2.o: demo2.c
 	$(CC) $(CFLAGS) $(MYCFLAGS) -c $^
 
 clean:
-	rm -f $(PROGRAM) $(OBJECTS)
+	rm -f demo1 demo2 gtkwidget.o demo1.o demo2.o $(OBJECTS)
