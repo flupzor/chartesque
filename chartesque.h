@@ -51,10 +51,8 @@ typedef struct _chq_axis_t {
 
 typedef struct _chq_dataplot_t {
 	cairo_t		*cr;
-	cairo_surface_t	*surface;
 	unsigned int	 width;
 	unsigned int	 height;
-	char		*output_filename;
 	/* axes */
 	chq_axis_t	*x_axis;
 	chq_axis_t	*y_axis;
@@ -105,7 +103,7 @@ void		 chq_dataplot_render_y_label_value(chq_dataplot_t *, double);
 void		 chq_dataplot_render_y_axis_labels(chq_dataplot_t *);
 void		 chq_dataplot_render_x_axis_labels(chq_dataplot_t *);
 void		 chq_dataplot_render_axes(chq_dataplot_t *);
-void		 chq_dataplot_render(chq_dataplot_t *);
+void		 chq_dataplot_render(chq_dataplot_t *, cairo_t *);
 void		 chq_dataplot_set_width(chq_dataplot_t *, unsigned int);
 void		 chq_dataplot_set_height(chq_dataplot_t *, unsigned int);
 void		 chq_dataplot_set_output_file(chq_dataplot_t *, char *);

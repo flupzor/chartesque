@@ -36,7 +36,6 @@ chq_dataplot_new()
 
 	chart->width = 800;
 	chart->height = 600;
-	chart->output_filename = strdup("output.png");
 
 	chart->x_axis = chq_axis_horizontal_new();
 	chart->y_axis = chq_axis_vertical_new();
@@ -58,7 +57,6 @@ chq_dataplot_kill(chq_dataplot_t *chart)
 {
 	chq_axis_kill(chart->x_axis);
 	chq_axis_kill(chart->y_axis);
-	free(chart->output_filename);
 	free(chart);
 }
 
@@ -82,23 +80,6 @@ chq_dataplot_get_text_size(cairo_t *cr, const char *family,
 
 	*width = extents.width;
 	*height = extents.height;
-}
-
-
-/**
- * Used by cairo to save to file.
- * @private
- */
-static cairo_status_t
-stdio_write (void *closure, const unsigned char *data, unsigned int length)
-{
-	FILE *file = closure;
-
-	if (fwrite (data, 1, length, file) == length) {
-		return CAIRO_STATUS_SUCCESS;
-	} else {
-		return CAIRO_STATUS_WRITE_ERROR;
-	}
 }
 
 
@@ -285,22 +266,12 @@ chq_dataplot_render_plots(chq_dataplot_t *chart)
  * Render the chq_dataplot.
  */
 void
-chq_dataplot_render(chq_dataplot_t *chart)
+chq_dataplot_render(chq_dataplot_t *chart, cairo_t *cr)
 {
-	FILE *fp;
-
-	chart->surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-			chart->width, chart->height);
-	chart->cr = cairo_create(chart->surface);
+	chart->cr = cr;
 
 	chq_dataplot_render_axes(chart);
 	chq_dataplot_render_plots(chart);
-
-	fp = fopen(chart->output_filename, "w");
-	cairo_surface_write_to_png_stream(chart->surface, stdio_write, fp);
-	cairo_destroy(chart->cr);
-	cairo_surface_destroy(chart->surface);
-	fclose(fp);
 }
 
 
@@ -321,17 +292,6 @@ void
 chq_dataplot_set_height(chq_dataplot_t *chart, unsigned int height)
 {
 	chart->height = height;
-}
-
-
-/**
- * Setter for the chart's global height.
- */
-void
-chq_dataplot_set_output_file(chq_dataplot_t *chart, char *filename)
-{
-	free(chart->output_filename);
-	chart->output_filename = strdup(filename);
 }
 
 
